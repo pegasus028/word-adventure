@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Adventure — Dumbledore's Army</title>
+  <meta name="description" content="Learn 28 English keywords through an interactive 8-scene storyboard of Dumbledore's Army, then test yourself with a quiz." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <h1 class="app-title">Word&nbsp;Adventure <span class="app-subtitle">Dumbledore's Army</span></h1>
+      <div class="passport" id="passport" title="Your Word Passport — click a highlighted word in the story to stamp it!">
+        <span class="passport-icon" aria-hidden="true">&#128211;</span>
+        <span class="passport-label">Word Passport</span>
+        <span class="passport-count"><span id="passport-count">0</span>/28</span>
+        <div class="passport-track" aria-hidden="true"><div class="passport-fill" id="passport-fill"></div></div>
+      </div>
+      <nav class="mode-tabs" aria-label="App sections">
+        <button class="tab-btn is-active" id="tab-story" type="button">Story</button>
+        <button class="tab-btn" id="tab-wordbank" type="button">Word Bank</button>
+        <button class="tab-btn" id="tab-quiz" type="button">Quiz</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="app-container" id="app">
+
+    <!-- ===================== STORY MODE ===================== -->
+    <section id="story-view" class="view is-visible" aria-label="Storyboard">
+
+      <ol class="scene-stops" id="scene-stops" aria-label="Scene progress"></ol>
+
+      <article class="scene-card">
+        <div class="scene-panel">
+          <img id="scene-image" class="scene-image" src="images/S1.png" alt="" />
+          <span class="scene-badge" id="scene-badge">Scene 1</span>
+        </div>
+
+        <div class="caption-box">
+          <div class="caption-head">
+            <h2 class="scene-title" id="scene-title">The Warning</h2>
+          </div>
+          <p class="caption-text" id="caption-text"></p>
+          <p class="caption-hint">Tap or hover a <span class="vocab-word demo">highlighted word</span> to open its dictionary card.</p>
+        </div>
+
+        <nav class="scene-nav" aria-label="Scene navigation">
+          <button class="nav-btn" id="prev-btn" type="button">&larr; Previous</button>
+          <span class="scene-counter" id="scene-counter">Scene 1 of 8</span>
+          <button class="nav-btn nav-btn--primary" id="next-btn" type="button">Next &rarr;</button>
+        </nav>
+      </article>
+    </section>
+
+    <!-- ===================== WORD BANK ===================== -->
+    <section id="wordbank-view" class="view" aria-label="Word Bank">
+      <div class="wordbank-head">
+        <h2>Word Bank</h2>
+        <p>All 28 keywords from the story, scene by scene. Stamped words are ones you've already explored. Click any word to review it.</p>
+      </div>
+      <div id="wordbank-list"></div>
+    </section>
+
+    <!-- ===================== QUIZ MODE ===================== -->
+    <section id="quiz-view" class="view" aria-label="Quiz">
+
+      <!-- Splash -->
+      <div class="quiz-splash" id="quiz-splash">
+        <div class="splash-emblem" aria-hidden="true">&#9889;</div>
+        <h2>Test Your Knowledge!</h2>
+        <p>You'll get <strong>10 random questions</strong> from the 28 keywords — definitions, word matches, synonyms and antonyms. Score <strong>7 or more</strong> to pass.</p>
+        <button class="nav-btn nav-btn--primary btn-lg" id="start-quiz" type="button">Start Quiz</button>
+      </div>
+
+      <!-- Active quiz -->
+      <div class="quiz-active" id="quiz-active" hidden>
+        <div class="quiz-progress">
+          <span class="quiz-progress-label" id="quiz-progress-label">Question 1 of 10</span>
+          <div class="progress-track"><div class="progress-fill" id="quiz-progress-fill"></div></div>
+        </div>
+        <div class="question-card">
+          <span class="question-type" id="question-type"></span>
+          <p class="question-prompt" id="question-prompt"></p>
+          <div class="answer-grid" id="answer-grid"></div>
+          <p class="quiz-feedback" id="quiz-feedback" role="status" aria-live="polite"></p>
+          <div class="quiz-next-row">
+            <button class="nav-btn nav-btn--primary" id="next-question" type="button" hidden>Next question &rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="quiz-results" id="quiz-results" hidden>
+        <div class="results-emblem" id="results-emblem" aria-hidden="true"></div>
+        <h2 id="results-heading"></h2>
+        <p class="results-score" id="results-score"></p>
+        <p class="results-message" id="results-message"></p>
+        <div class="results-actions">
+          <button class="nav-btn nav-btn--primary" id="retry-quiz" type="button">Try another 10 questions</button>
+          <button class="nav-btn" id="restart-story" type="button">Restart story</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== DICTIONARY MODAL ===================== -->
+  <div class="modal-backdrop" id="modal-backdrop" hidden>
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-keyword">
+      <button class="modal-close" id="modal-close" type="button" aria-label="Close dictionary">&times;</button>
+      <div class="modal-header">
+        <h2 class="modal-keyword" id="modal-keyword"></h2>
+      </div>
+      <span class="modal-stamp" id="modal-stamp" aria-hidden="true">STAMPED &#10004;</span>
+      <div class="modal-section">
+        <h3>Definition</h3>
+        <p id="modal-definition"></p>
+        <span id="modal-pos" hidden></span>
+      </div>
+      <div class="modal-section">
+        <h3>Examples</h3>
+        <ul class="modal-example" id="modal-example"></ul>
+      </div>
+      <div class="modal-section">
+        <h3>Synonyms</h3>
+        <div class="chip-row" id="modal-synonyms"></div>
+      </div>
+      <div class="modal-section">
+        <h3>Antonyms</h3>
+        <div class="chip-row" id="modal-antonyms"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Built for English learners (A2&ndash;C1) &middot; 8 scenes &middot; 28 keywords</p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
